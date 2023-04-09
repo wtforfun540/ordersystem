@@ -30,45 +30,53 @@ public class OrderServiceImpl {
     private TableInfoMapper tableInfoMapper;
 
 
-    public void saveOrder(Order order){
+    public void saveOrder(Order order) {
         orderMapper.insertSelective(order);
     }
 
-    public  void updateOrder(Order order){
+    public void updateOrder(Order order) {
         orderMapper.updateByPrimaryKeySelective(order);
     }
 
-    public  void saveOrderDetail(OrderDetail orderDetail){
+    public void saveOrderDetail(OrderDetail orderDetail) {
         orderDetailMapper.insertSelective(orderDetail);
     }
 
-    public  void batchSaveOredrDetail(List<OrderDetail> orderDetails){
-        for(OrderDetail orderDetail : orderDetails){
+    public void batchSaveOredrDetail(List<OrderDetail> orderDetails) {
+        for (OrderDetail orderDetail : orderDetails) {
             saveOrderDetail(orderDetail);
         }
     }
 
-    public  Order getOrderById(int id){
+    public OrderDetail getOrderDetailById(int id) {
+        return orderDetailMapper.selectByPrimaryKey(id);
+    }
+
+    public void updateOrderDetail(OrderDetail orderDetail) {
+        orderDetailMapper.updateByPrimaryKeySelective(orderDetail);
+    }
+
+    public Order getOrderById(int id) {
         return orderMapper.selectByPrimaryKey(id);
     }
 
-    public List<Order> getAllOrders(){
+    public List<Order> getAllOrders() {
         return orderMapper.selectAll();
     }
 
-    public  List<Order> getOrdersByWaiterId(int waiterId){
+    public List<Order> getOrdersByWaiterId(int waiterId) {
         return orderMapper.getOrdersByWaiterId(waiterId);
     }
 
-    public  List<Order> getOrdersByWaiterIdAndIsFinished(int waiterId, int isFinished){
-        Map<String,Integer> param = new HashMap<>();
-        param.put("waiterId",waiterId);
-        param.put("isFinished",isFinished);
+    public List<Order> getOrdersByWaiterIdAndIsFinished(int waiterId, int isFinished) {
+        Map<String, Integer> param = new HashMap<>();
+        param.put("waiterId", waiterId);
+        param.put("isFinished", isFinished);
         return orderMapper.getOrdersByWaiterIdAndIsFinished(param);
     }
 
 
-    public  void updateTableAvailability(int tableId, int available){
+    public void updateTableAvailability(int tableId, boolean available) {
 
         TableInfo tableInfo = tableInfoMapper.selectByPrimaryKey(tableId);
 

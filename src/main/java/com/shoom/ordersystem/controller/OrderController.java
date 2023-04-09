@@ -1,19 +1,16 @@
 package com.shoom.ordersystem.controller;
 
+import com.shoom.ordersystem.cons.Consts;
 import com.shoom.ordersystem.entity.RequestOrderParam;
 import com.shoom.ordersystem.model.Order;
 import com.shoom.ordersystem.model.OrderDetail;
-import com.shoom.ordersystem.model.TableInfo;
 import com.shoom.ordersystem.service.OrderServiceImpl;
-import com.sun.org.apache.xpath.internal.operations.Or;
-import javafx.scene.control.Tab;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * @author wangtao
@@ -37,27 +34,31 @@ public class OrderController {
      * @param param
      * @return
      */
+    @Transactional
     @PostMapping("/order")
     public ResponseEntity addOrder(@RequestBody RequestOrderParam param) {
 
+        //封装订单
         Order order = new Order();
         order.setTableId(param.getTableId());
         order.setWaiterId(param.getWaiterId());
-        order.setIsfinished(0);
-
+        order.setIsfinished(Consts.FALSE);
+        //保存订单
         orderService.saveOrder(order);
 
+        //获取订单详情
         List<OrderDetail> orderDetails = param.getOrderDetails();
         for (OrderDetail orderDetail : orderDetails) {
             orderDetail.setOrderId(order.getId());
         }
 
+        //保存订单详情
         orderService.batchSaveOredrDetail(orderDetails);
 
-        orderService.updateTableAvailability(param.getTableId(), 0);
+        //更新桌面状态
+        orderService.updateTableAvailability(param.getTableId(), Consts.FALSE);
 
-        System.out.println("下单");
-        return null;
+        return ResponseEntity.ok().build();
     }
 
     /**
@@ -95,23 +96,46 @@ public class OrderController {
     }
 
     /**
+     *
+     * 更新单个订单记录状态
+     * 0，已下单
+     * 1，待取餐
+     * 2，已取餐
+     * @param id
+     * @param status
+     * @return
+     */
+    @PutMapping("/orderDetail/{id}")
+    public ResponseEntity updateOrderDetailStatus(@PathVariable int id, @RequestParam int status) {
+
+        OrderDetail orderDetail = orderService.getOrderDetailById(id);
+        orderDetail.setStatus(status);
+
+        orderService.updateOrderDetail(orderDetail);
+
+        return ResponseEntity.ok().build();
+    }
+
+    /**
      * 结束某个订单（用餐结束）
      * 桌子回到可用状态
      *
      * @param id
      * @return
      */
+    @Transactional
     @GetMapping("/finishOrder/{id}")
     public ResponseEntity finishOrder(@PathVariable Integer id) {
 
-
+        //获取订单
         Order order = orderService.getOrderById(id);
-        order.setIsfinished(1);
+        order.setIsfinished(Consts.TRUE);
+        //更新订单
         orderService.updateOrder(order);
+        //更新桌面状态
+        orderService.updateTableAvailability(order.getTableId(), Consts.TRUE);
 
-        orderService.updateTableAvailability(order.getTableId(), 1);
-
-        return null;
+        return ResponseEntity.ok().build();
     }
 
     /**

@@ -1,6 +1,6 @@
 package com.shoom.ordersystem.controller;
 
-import com.shoom.ordersystem.config.Consts;
+import com.shoom.ordersystem.cons.Consts;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
