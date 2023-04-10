@@ -58,6 +58,9 @@ public class OrderController {
         //更新桌面状态
         orderService.updateTableAvailability(param.getTableId(), Consts.FALSE);
 
+        //// TODO: 2023/4/10  推送订单到后厨
+    
+
         return ResponseEntity.ok().build();
     }
 
@@ -92,7 +95,12 @@ public class OrderController {
     @GetMapping("/order")
     public ResponseEntity getAllOredrs() {
         System.out.println("获取所有订单");
-        return ResponseEntity.ok(orderService.getAllOrders());
+        List<Order> orders = orderService.getAllOrders();
+        for(Order order : orders){
+            List<OrderDetail> orderDetails =orderService.getOrderDetailByOrderId(order.getId());
+            order.setOrderDetails(orderDetails);
+        }
+        return ResponseEntity.ok(orders);
     }
 
     /**

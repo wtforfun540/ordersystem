@@ -52,6 +52,10 @@ public class OrderServiceImpl {
         return orderDetailMapper.selectByPrimaryKey(id);
     }
 
+    public List<OrderDetail> getOrderDetailByOrderId(int id) {
+        return orderDetailMapper.getOrderDetailByOrderId(id);
+    }
+
     public void updateOrderDetail(OrderDetail orderDetail) {
         orderDetailMapper.updateByPrimaryKeySelective(orderDetail);
     }
