@@ -1,6 +1,7 @@
 package com.shoom.ordersystem.model;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
@@ -59,6 +60,10 @@ public class Order implements Serializable {
      */
     private boolean isfinished;
 
+    /**
+     * 当前订单总价格
+     */
+    private BigDecimal totalPrice;
 
     private List<OrderDetail> orderDetails;
 
@@ -72,6 +77,14 @@ public class Order implements Serializable {
 
     public void setOrderDetails(List<OrderDetail> orderDetails) {
         this.orderDetails = orderDetails;
+    }
+
+    public BigDecimal getTotalPrice() {
+        return totalPrice;
+    }
+
+    public void setTotalPrice(BigDecimal totalPrice) {
+        this.totalPrice = totalPrice;
     }
 
     /**

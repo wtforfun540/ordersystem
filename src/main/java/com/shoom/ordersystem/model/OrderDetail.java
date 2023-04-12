@@ -47,7 +47,7 @@ public class OrderDetail implements Serializable {
      *
      * @mbg.generated Fri Apr 07 19:38:52 PDT 2023
      */
-    private Long productPrice;
+    private Double productPrice;
 
     /**
      *
@@ -188,7 +188,7 @@ public class OrderDetail implements Serializable {
      *
      * @mbg.generated Fri Apr 07 19:38:52 PDT 2023
      */
-    public Long getProductPrice() {
+    public double getProductPrice() {
         return productPrice;
     }
 
@@ -200,7 +200,7 @@ public class OrderDetail implements Serializable {
      *
      * @mbg.generated Fri Apr 07 19:38:52 PDT 2023
      */
-    public void setProductPrice(Long productPrice) {
+    public void setProductPrice(double productPrice) {
         this.productPrice = productPrice;
     }
 

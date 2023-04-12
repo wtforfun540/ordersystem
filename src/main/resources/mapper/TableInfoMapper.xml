@@ -9,6 +9,7 @@
     -->
     <id column="id" jdbcType="INTEGER" property="id" />
     <result column="available" jdbcType="TINYINT" property="available" />
+    <result column="desk_number" jdbcType="VARCHAR" property="deskNumber" />
   </resultMap>
   <sql id="Base_Column_List">
     <!--

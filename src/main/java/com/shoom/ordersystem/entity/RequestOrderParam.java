@@ -2,6 +2,7 @@ package com.shoom.ordersystem.entity;
 
 import com.shoom.ordersystem.model.OrderDetail;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 /**
@@ -23,14 +24,21 @@ public class RequestOrderParam {
     private int waiterId;
 
     /**
+     * 桌子编号/名字
+     */
+    private String deskNumber;
+
+    private BigDecimal totalPrice;
+
+    /**
      * 订单详情
      */
-    private List<OrderDetail> orderDetails;
+    private List<OrderDetail> items;
 
     public RequestOrderParam(int tableId, int waiterId, List<OrderDetail> orderDetails) {
         this.tableId = tableId;
         this.waiterId = waiterId;
-        this.orderDetails = orderDetails;
+        this.items = orderDetails;
     }
 
     public int getTableId() {
@@ -50,10 +58,10 @@ public class RequestOrderParam {
     }
 
     public List<OrderDetail> getOrderDetails() {
-        return orderDetails;
+        return items;
     }
 
     public void setOrderDetails(List<OrderDetail> orderDetails) {
-        this.orderDetails = orderDetails;
+        this.items = orderDetails;
     }
 }

@@ -1,7 +1,6 @@
 package com.shoom.ordersystem.controller;
 
 import com.shoom.ordersystem.cons.Consts;
-import com.shoom.ordersystem.entity.RequestOrderParam;
 import com.shoom.ordersystem.model.Order;
 import com.shoom.ordersystem.model.OrderDetail;
 import com.shoom.ordersystem.service.OrderServiceImpl;
@@ -11,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author wangtao
@@ -30,36 +30,53 @@ public class OrderController {
      * 3，将桌子的available改为0
      * <p>
      * 需要开启事务
+     * <p>
+     * 临时先用map接收参数，后面再改
      *
-     * @param param
+     * @param @RequestBody RequestOrderParam param
      * @return
      */
     @Transactional
     @PostMapping("/order")
-    public ResponseEntity addOrder(@RequestBody RequestOrderParam param) {
+    public ResponseEntity addOrder(@RequestBody Map<String, Object> map) {
+
+        String deskNumber = (String) map.get("deskNumber");
+        int tableId = Integer.valueOf(deskNumber.substring(1, 2));
+
 
         //封装订单
         Order order = new Order();
-        order.setTableId(param.getTableId());
-        order.setWaiterId(param.getWaiterId());
+        order.setTableId(tableId);
+        order.setWaiterId(1);
         order.setIsfinished(Consts.FALSE);
         //保存订单
         orderService.saveOrder(order);
+//
+        List<Map<String, Object>> items = (List<Map<String, Object>>) map.get("items");
 
-        //获取订单详情
-        List<OrderDetail> orderDetails = param.getOrderDetails();
-        for (OrderDetail orderDetail : orderDetails) {
+        for (Map<String, Object> item : items) {
+
+            OrderDetail orderDetail = new OrderDetail();
             orderDetail.setOrderId(order.getId());
+            orderDetail.setProductId((int) item.get("id"));
+            orderDetail.setCount((int) item.get("quantity"));
+            orderDetail.setProductPrice((double) item.get("price"));
+            orderDetail.setStatus(Consts.ORDERED);
+            orderService.saveOrderDetail(orderDetail);
         }
-
-        //保存订单详情
-        orderService.batchSaveOredrDetail(orderDetails);
-
+//        //获取订单详情
+//        List<OrderDetail> orderDetails = param.getOrderDetails();
+//        for (OrderDetail orderDetail : orderDetails) {
+//            orderDetail.setOrderId(order.getId());
+//        }
+//
+//        //保存订单详情
+//        orderService.batchSaveOredrDetail(orderDetails);
+//
         //更新桌面状态
-        orderService.updateTableAvailability(param.getTableId(), Consts.FALSE);
+        orderService.updateTableAvailability(tableId, Consts.FALSE);
 
         //// TODO: 2023/4/10  推送订单到后厨
-    
 
         return ResponseEntity.ok().build();
     }
@@ -93,22 +110,22 @@ public class OrderController {
      * @return
      */
     @GetMapping("/order")
-    public ResponseEntity getAllOredrs() {
+    public ResponseEntity getAllOrders() {
         System.out.println("获取所有订单");
         List<Order> orders = orderService.getAllOrders();
-        for(Order order : orders){
-            List<OrderDetail> orderDetails =orderService.getOrderDetailByOrderId(order.getId());
+        for (Order order : orders) {
+            List<OrderDetail> orderDetails = orderService.getOrderDetailByOrderId(order.getId());
             order.setOrderDetails(orderDetails);
         }
         return ResponseEntity.ok(orders);
     }
 
     /**
-     *
      * 更新单个订单记录状态
      * 0，已下单
      * 1，待取餐
      * 2，已取餐
+     *
      * @param id
      * @param status
      * @return

@@ -10,6 +10,15 @@ public class Consts {
 
     public static boolean FALSE = false;
 
+    //已下单
+    public static Integer ORDERED = 0;
+
+    //待取餐
+    public static Integer READY = 1;
+
+    //已取餐
+    public static Integer FINISHED = 2;
+
     /**
      * 产品信息 目前以json写死
      */
