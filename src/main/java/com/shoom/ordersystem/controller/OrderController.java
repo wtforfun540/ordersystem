@@ -60,7 +60,8 @@ public class OrderController {
             orderDetail.setOrderId(order.getId());
             orderDetail.setProductId((int) item.get("id"));
             orderDetail.setCount((int) item.get("quantity"));
-            orderDetail.setProductPrice((double) item.get("price"));
+            double price = Double.valueOf(item.get("price").toString());
+            orderDetail.setProductPrice(price);
             orderDetail.setStatus(Consts.ORDERED);
             orderService.saveOrderDetail(orderDetail);
         }
@@ -177,6 +178,11 @@ public class OrderController {
         } else {
             return ResponseEntity.ok(orderService.getOrdersByWaiterIdAndIsFinished(waiterId, isFinished));
         }
+    }
+
+    @GetMapping("/getUnfinishedOrders")
+    public ResponseEntity getUnfinishedOrders() {
+        return ResponseEntity.ok(orderService.getUnfinishedOrders());
     }
 
 
