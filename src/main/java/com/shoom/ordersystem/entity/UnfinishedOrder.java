@@ -26,12 +26,14 @@ public class UnfinishedOrder {
     /**
      * 产品名称
      */
-    private String productName;
+    private String name;
+
+
 
     /**
      * 数量
      */
-    private int count;
+    private int quantity;
 
     public int getId() {
         return id;
@@ -57,19 +59,19 @@ public class UnfinishedOrder {
         this.createTime = createTime;
     }
 
-    public String getProductName() {
-        return productName;
+    public String getName() {
+        return name;
     }
 
-    public void setProductName(String productName) {
-        this.productName = productName;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public int getCount() {
-        return count;
+    public int getQuantity() {
+        return quantity;
     }
 
-    public void setCount(int count) {
-        this.count = count;
+    public void setQuantity(int quantity) {
+        this.quantity = quantity;
     }
 }

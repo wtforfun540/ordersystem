@@ -1,6 +1,6 @@
 package com.shoom.ordersystem.service;
 
-import com.shoom.ordersystem.entity.UnfinishedOrder;
+import com.shoom.ordersystem.entity.*;
 import com.shoom.ordersystem.mapper.OrderDetailMapper;
 import com.shoom.ordersystem.mapper.OrderMapper;
 import com.shoom.ordersystem.mapper.TableInfoMapper;
@@ -63,6 +63,11 @@ public class OrderServiceImpl {
 
     public List<UnfinishedOrder> getUnfinishedOrders(){
         return orderMapper.getUnfinishedOrders();
+    }
+
+    public List<FinishedOrder> getAllFinishedOrders(){
+
+        return orderMapper.getAllFinishedOrders();
     }
 
     public Order getOrderById(int id) {

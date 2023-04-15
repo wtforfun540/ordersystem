@@ -1,6 +1,7 @@
 package com.shoom.ordersystem.controller;
 
 import com.shoom.ordersystem.cons.Consts;
+import com.shoom.ordersystem.entity.*;
 import com.shoom.ordersystem.model.Order;
 import com.shoom.ordersystem.model.OrderDetail;
 import com.shoom.ordersystem.service.OrderServiceImpl;
@@ -9,6 +10,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
@@ -43,12 +46,13 @@ public class OrderController {
         String deskNumber = (String) map.get("deskNumber");
         int tableId = Integer.valueOf(deskNumber.substring(1, 2));
 
-
+  //
         //封装订单
         Order order = new Order();
         order.setTableId(tableId);
         order.setWaiterId(1);
         order.setIsfinished(Consts.FALSE);
+
         //保存订单
         orderService.saveOrder(order);
 //
@@ -182,7 +186,36 @@ public class OrderController {
 
     @GetMapping("/getUnfinishedOrders")
     public ResponseEntity getUnfinishedOrders() {
-        return ResponseEntity.ok(orderService.getUnfinishedOrders());
+
+        //=========Begin 此处是为了去重，判定标准是对象的ID是否相等   ==============
+        HashSet<Integer>  uniqueid=new HashSet<Integer>();
+        List<UnfinishedOrder>   newUnfinishedOrderlist=new ArrayList<UnfinishedOrder>();
+        for(UnfinishedOrder unfinishedOrder: orderService.getUnfinishedOrders()){
+           if(!uniqueid.contains(unfinishedOrder.getId())){
+               uniqueid.add(unfinishedOrder.getId());
+               newUnfinishedOrderlist.add(unfinishedOrder);
+           }
+        }
+        //=========End 此处是为了去重，判定标准是对象的ID是否相等  ==============
+        return ResponseEntity.ok(newUnfinishedOrderlist);
+    }
+
+
+
+
+    @GetMapping("/getAllFinishedOrders")
+    public ResponseEntity getAllFinishedOrders() {
+        //=========Begin 此处是为了去重，判定标准是对象的ID是否相等   ==============
+        HashSet<Integer>  uniqueid=new HashSet<Integer>();
+        List<FinishedOrder>   newFinishedOrderlist=new ArrayList<FinishedOrder>();
+        for(FinishedOrder finishedOrder: orderService.getAllFinishedOrders()){
+            if(!uniqueid.contains(finishedOrder.getId())){
+                uniqueid.add(finishedOrder.getId());
+                newFinishedOrderlist.add(finishedOrder);
+            }
+        }
+        //=========End 此处是为了去重，判定标准是对象的ID是否相等  ==============
+        return ResponseEntity.ok(newFinishedOrderlist);
     }
 
 
