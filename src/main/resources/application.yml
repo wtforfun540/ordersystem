@@ -8,9 +8,9 @@ spring:
     type: com.alibaba.druid.pool.DruidDataSource
     druid:
       driver-class-name: com.mysql.cj.jdbc.Driver
-      url: jdbc:mysql://175.24.199.48:3307/shoom_order?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8&nullCatalogMeansCurrent=true
+      url: jdbc:mysql://175.24.199.48:3306/shoom_order?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&nullCatalogMeansCurrent=true
       username: root
-      password: '!QAZ2wsx'
+      password: '123456'
       initial-size: 1
       min-idle: 1
       max-active: 20
