@@ -26,6 +26,12 @@ public class OrderController {
     private OrderServiceImpl orderService;
 
 
+    @GetMapping("/hello")
+    public ResponseEntity hello() {
+        return ResponseEntity.ok("hello world");
+    }
+
+
     /**
      * 增加订单
      * 1，保存订单信息到orders表
@@ -46,7 +52,7 @@ public class OrderController {
         String deskNumber = (String) map.get("deskNumber");
         int tableId = Integer.valueOf(deskNumber.substring(1, 2));
 
-  //
+        //
         //封装订单
         Order order = new Order();
         order.setTableId(tableId);
@@ -188,28 +194,26 @@ public class OrderController {
     public ResponseEntity getUnfinishedOrders() {
 
         //=========Begin 此处是为了去重，判定标准是对象的ID是否相等   ==============
-        HashSet<Integer>  uniqueid=new HashSet<Integer>();
-        List<UnfinishedOrder>   newUnfinishedOrderlist=new ArrayList<UnfinishedOrder>();
-        for(UnfinishedOrder unfinishedOrder: orderService.getUnfinishedOrders()){
-           if(!uniqueid.contains(unfinishedOrder.getId())){
-               uniqueid.add(unfinishedOrder.getId());
-               newUnfinishedOrderlist.add(unfinishedOrder);
-           }
+        HashSet<Integer> uniqueid = new HashSet<Integer>();
+        List<UnfinishedOrder> newUnfinishedOrderlist = new ArrayList<UnfinishedOrder>();
+        for (UnfinishedOrder unfinishedOrder : orderService.getUnfinishedOrders()) {
+            if (!uniqueid.contains(unfinishedOrder.getId())) {
+                uniqueid.add(unfinishedOrder.getId());
+                newUnfinishedOrderlist.add(unfinishedOrder);
+            }
         }
         //=========End 此处是为了去重，判定标准是对象的ID是否相等  ==============
         return ResponseEntity.ok(newUnfinishedOrderlist);
     }
 
 
-
-
     @GetMapping("/getAllFinishedOrders")
     public ResponseEntity getAllFinishedOrders() {
         //=========Begin 此处是为了去重，判定标准是对象的ID是否相等   ==============
-        HashSet<Integer>  uniqueid=new HashSet<Integer>();
-        List<FinishedOrder>   newFinishedOrderlist=new ArrayList<FinishedOrder>();
-        for(FinishedOrder finishedOrder: orderService.getAllFinishedOrders()){
-            if(!uniqueid.contains(finishedOrder.getId())){
+        HashSet<Integer> uniqueid = new HashSet<Integer>();
+        List<FinishedOrder> newFinishedOrderlist = new ArrayList<FinishedOrder>();
+        for (FinishedOrder finishedOrder : orderService.getAllFinishedOrders()) {
+            if (!uniqueid.contains(finishedOrder.getId())) {
                 uniqueid.add(finishedOrder.getId());
                 newFinishedOrderlist.add(finishedOrder);
             }
