@@ -84,8 +84,7 @@
       FROM
       orders a
       INNER JOIN order_detail b ON a.id = b.order_id
-      WHERE
-      a.is_finished = 0
+      WHERE b.status=0
       ORDER BY
       a.create_time;
   </select>
@@ -106,7 +105,7 @@
     FROM
     orders a
     INNER JOIN order_detail b ON a.id = b.order_id
-    WHERE   a.is_finished = 1
+    WHERE b.status=1
     AND   a.create_time=to_days(now())
     ORDER BY
     a.create_time;
