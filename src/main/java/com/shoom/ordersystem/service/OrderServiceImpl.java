@@ -53,7 +53,7 @@ public class OrderServiceImpl {
         return orderDetailMapper.selectByPrimaryKey(id);
     }
 
-    public List<OrderDetail> getOrderDetailByOrderId(int id) {
+    public List<OrderDetail> getOrderDetailByOrderId(String id) {
         return orderDetailMapper.getOrderDetailByOrderId(id);
     }
 
@@ -70,12 +70,17 @@ public class OrderServiceImpl {
         return orderMapper.getAllFinishedOrders();
     }
 
-    public Order getOrderById(int id) {
+    public Order getOrderById(String id) {
         return orderMapper.selectByPrimaryKey(id);
     }
 
     public List<Order> getAllOrders() {
         return orderMapper.selectAll();
+    }
+
+
+    public List<Order> getAllProcessOrder() {
+        return orderMapper.getAllProcessOrder();
     }
 
     public List<Order> getOrdersByWaiterId(int waiterId) {
@@ -90,7 +95,7 @@ public class OrderServiceImpl {
     }
 
 
-    public void updateTableAvailability(int tableId, boolean available) {
+    public void updateTableAvailability(String tableId, boolean available) {
 
         TableInfo tableInfo = tableInfoMapper.selectByPrimaryKey(tableId);
 

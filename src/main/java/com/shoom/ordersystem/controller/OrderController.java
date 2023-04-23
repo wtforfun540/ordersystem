@@ -1,5 +1,4 @@
 package com.shoom.ordersystem.controller;
-
 import com.shoom.ordersystem.cons.Consts;
 import com.shoom.ordersystem.entity.*;
 import com.shoom.ordersystem.model.Order;
@@ -9,9 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
@@ -50,13 +46,13 @@ public class OrderController {
     public ResponseEntity addOrder(@RequestBody Map<String, Object> map) {
 
         String deskNumber = (String) map.get("deskNumber");
-        int tableId = Integer.valueOf(deskNumber.substring(1, 2));
+       // int tableId = Integer.valueOf(deskNumber.substring(1, 2));
 
         //
         //封装订单
         Order order = new Order();
-        order.setTableId(tableId);
-        order.setWaiterId(1);
+        order.setTableId(deskNumber);
+        order.setWaiterId("");
         order.setIsfinished(Consts.FALSE);
 
         //保存订单
@@ -67,7 +63,7 @@ public class OrderController {
         for (Map<String, Object> item : items) {
 
             OrderDetail orderDetail = new OrderDetail();
-            orderDetail.setOrderId(order.getId());
+            orderDetail.setOrderId(deskNumber);
             orderDetail.setProductId((int) item.get("id"));
             orderDetail.setCount((int) item.get("quantity"));
             double price = Double.valueOf(item.get("price").toString());
@@ -85,7 +81,7 @@ public class OrderController {
 //        orderService.batchSaveOredrDetail(orderDetails);
 //
         //更新桌面状态
-        orderService.updateTableAvailability(tableId, Consts.FALSE);
+        orderService.updateTableAvailability(deskNumber, Consts.FALSE);
 
         //// TODO: 2023/4/10  推送订单到后厨
 
@@ -99,7 +95,7 @@ public class OrderController {
      * @return
      */
     @DeleteMapping("/order/{id}")
-    public ResponseEntity deleteOrder(@PathVariable Integer id) {
+    public ResponseEntity deleteOrder(@PathVariable String id) {
         System.out.println("删除订单" + id);
         return null;
     }
@@ -111,7 +107,7 @@ public class OrderController {
      * @return
      */
     @GetMapping("/order/{id}")
-    public ResponseEntity getOrderById(@PathVariable Integer id) {
+    public ResponseEntity getOrderById(@PathVariable String id) {
         return ResponseEntity.ok(orderService.getOrderById(id));
     }
 
@@ -125,7 +121,25 @@ public class OrderController {
         System.out.println("获取所有订单");
         List<Order> orders = orderService.getAllOrders();
         for (Order order : orders) {
-            List<OrderDetail> orderDetails = orderService.getOrderDetailByOrderId(order.getId());
+            List<OrderDetail> orderDetails = orderService.getOrderDetailByOrderId(order.getTableId());
+            order.setOrderDetails(orderDetails);
+        }
+        return ResponseEntity.ok(orders);
+    }
+
+
+    /**
+     * 获取所有进行中的订单（按照每桌为最小单元）
+     *
+     * @return
+     */
+    @GetMapping("/allProcessOrder")
+    public ResponseEntity getAllProcessOrder() {
+ //String
+        System.out.println("获取所有进行中的订单");
+        List<Order> orders = orderService.getAllProcessOrder();
+        for (Order order : orders) {
+            List<OrderDetail> orderDetails = orderService.getOrderDetailByOrderId(order.getTableId());
             order.setOrderDetails(orderDetails);
         }
         return ResponseEntity.ok(orders);
@@ -143,12 +157,9 @@ public class OrderController {
      */
     @PutMapping("/orderDetail/{id}")
     public ResponseEntity updateOrderDetailStatus(@PathVariable int id, @RequestParam int status) {
-
         OrderDetail orderDetail = orderService.getOrderDetailById(id);
         orderDetail.setStatus(status);
-
         orderService.updateOrderDetail(orderDetail);
-
         return ResponseEntity.ok().build();
     }
 
@@ -161,16 +172,15 @@ public class OrderController {
      */
     @Transactional
     @GetMapping("/finishOrder/{id}")
-    public ResponseEntity finishOrder(@PathVariable Integer id) {
-
-        //获取订单
+    public ResponseEntity finishOrder(@PathVariable String id) {
         Order order = orderService.getOrderById(id);
         order.setIsfinished(Consts.TRUE);
-        //更新订单
         orderService.updateOrder(order);
-        //更新桌面状态
-        orderService.updateTableAvailability(order.getTableId(), Consts.TRUE);
-
+        List<OrderDetail> orderDetails = orderService.getOrderDetailByOrderId(order.getTableId());
+        for (OrderDetail orderdetail : orderDetails) {
+            orderdetail.setStatus(3);
+            orderService.updateOrderDetail(orderdetail);
+        }
         return ResponseEntity.ok().build();
     }
 
@@ -192,34 +202,15 @@ public class OrderController {
 
     @GetMapping("/getUnfinishedOrders")
     public ResponseEntity getUnfinishedOrders() {
-
-        //=========Begin 此处是为了去重，判定标准是对象的ID是否相等   ==============
-        HashSet<Integer> uniqueid = new HashSet<Integer>();
-        List<UnfinishedOrder> newUnfinishedOrderlist = new ArrayList<UnfinishedOrder>();
-        for (UnfinishedOrder unfinishedOrder : orderService.getUnfinishedOrders()) {
-            if (!uniqueid.contains(unfinishedOrder.getId())) {
-                uniqueid.add(unfinishedOrder.getId());
-                newUnfinishedOrderlist.add(unfinishedOrder);
-            }
-        }
-        //=========End 此处是为了去重，判定标准是对象的ID是否相等  ==============
-        return ResponseEntity.ok(newUnfinishedOrderlist);
+        List<UnfinishedOrder> unfinishedOrderlist = orderService.getUnfinishedOrders();
+        return ResponseEntity.ok(unfinishedOrderlist);
     }
 
 
     @GetMapping("/getAllFinishedOrders")
     public ResponseEntity getAllFinishedOrders() {
-        //=========Begin 此处是为了去重，判定标准是对象的ID是否相等   ==============
-        HashSet<Integer> uniqueid = new HashSet<Integer>();
-        List<FinishedOrder> newFinishedOrderlist = new ArrayList<FinishedOrder>();
-        for (FinishedOrder finishedOrder : orderService.getAllFinishedOrders()) {
-            if (!uniqueid.contains(finishedOrder.getId())) {
-                uniqueid.add(finishedOrder.getId());
-                newFinishedOrderlist.add(finishedOrder);
-            }
-        }
-        //=========End 此处是为了去重，判定标准是对象的ID是否相等  ==============
-        return ResponseEntity.ok(newFinishedOrderlist);
+        List<FinishedOrder> finishedOrderlist =orderService.getAllFinishedOrders();
+        return ResponseEntity.ok(finishedOrderlist);
     }
 
 

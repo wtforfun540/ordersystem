@@ -22,7 +22,7 @@ public class Order implements Serializable {
      *
      * @mbg.generated Fri Apr 07 19:38:52 PDT 2023
      */
-    private Integer tableId;
+    private String tableId;
 
     /**
      *
@@ -31,7 +31,7 @@ public class Order implements Serializable {
      *
      * @mbg.generated Fri Apr 07 19:38:52 PDT 2023
      */
-    private Integer waiterId;
+    private String waiterId;
 
     /**
      *
@@ -127,7 +127,7 @@ public class Order implements Serializable {
      *
      * @mbg.generated Fri Apr 07 19:38:52 PDT 2023
      */
-    public Integer getTableId() {
+    public String getTableId() {
         return tableId;
     }
 
@@ -139,7 +139,7 @@ public class Order implements Serializable {
      *
      * @mbg.generated Fri Apr 07 19:38:52 PDT 2023
      */
-    public void setTableId(Integer tableId) {
+    public void setTableId(String tableId) {
         this.tableId = tableId;
     }
 
@@ -151,7 +151,7 @@ public class Order implements Serializable {
      *
      * @mbg.generated Fri Apr 07 19:38:52 PDT 2023
      */
-    public Integer getWaiterId() {
+    public String getWaiterId() {
         return waiterId;
     }
 
@@ -163,7 +163,7 @@ public class Order implements Serializable {
      *
      * @mbg.generated Fri Apr 07 19:38:52 PDT 2023
      */
-    public void setWaiterId(Integer waiterId) {
+    public void setWaiterId(String waiterId) {
         this.waiterId = waiterId;
     }
 

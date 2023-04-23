@@ -65,7 +65,7 @@ public class OrderDetail implements Serializable {
      *
      * @mbg.generated Fri Apr 07 19:38:52 PDT 2023
      */
-    private Integer orderId;
+    private String orderId;
 
     /**
      *
@@ -236,7 +236,7 @@ public class OrderDetail implements Serializable {
      *
      * @mbg.generated Fri Apr 07 19:38:52 PDT 2023
      */
-    public Integer getOrderId() {
+    public String getOrderId() {
         return orderId;
     }
 
@@ -248,7 +248,7 @@ public class OrderDetail implements Serializable {
      *
      * @mbg.generated Fri Apr 07 19:38:52 PDT 2023
      */
-    public void setOrderId(Integer orderId) {
+    public void setOrderId(String orderId) {
         this.orderId = orderId;
     }
 

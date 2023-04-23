@@ -53,5 +53,5 @@ public interface OrderDetailMapper {
      */
     int updateByPrimaryKey(OrderDetail row);
 
-    List<OrderDetail> getOrderDetailByOrderId(int id);
+    List<OrderDetail> getOrderDetailByOrderId(String id);
 }
