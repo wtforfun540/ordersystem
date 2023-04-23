@@ -53,5 +53,7 @@ public interface OrderDetailMapper {
      */
     int updateByPrimaryKey(OrderDetail row);
 
-    List<OrderDetail> getOrderDetailByOrderId(String id);
+    List<OrderDetail> getOrderDetailByOrderId(Integer id);
+
+    List<OrderDetail> getCompleteOrderDetailByOrderId(Integer id);
 }

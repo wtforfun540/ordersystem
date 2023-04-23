@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -61,13 +62,15 @@ public class OrderController {
 
         //保存订单
         orderService.saveOrder(order);
+
+        Integer orderid=order.getId();
 //
         List<Map<String, Object>> items = (List<Map<String, Object>>) map.get("items");
 
         for (Map<String, Object> item : items) {
 
             OrderDetail orderDetail = new OrderDetail();
-            orderDetail.setOrderId(deskNumber);
+            orderDetail.setOrderId(orderid);
             orderDetail.setProductId((int) item.get("id"));
             orderDetail.setCount((int) item.get("quantity"));
             orderDetail.setProductName((String) item.get("name"));
@@ -126,7 +129,7 @@ public class OrderController {
         System.out.println("获取所有订单");
         List<Order> orders = orderService.getAllOrders();
         for (Order order : orders) {
-            List<OrderDetail> orderDetails = orderService.getOrderDetailByOrderId(order.getTableId());
+            List<OrderDetail> orderDetails = orderService.getOrderDetailByOrderId(order.getId());
             order.setOrderDetails(orderDetails);
         }
         return ResponseEntity.ok(orders);
@@ -135,7 +138,6 @@ public class OrderController {
 
     /**
      * 获取所有进行中的订单（按照每桌为最小单元）
-     *
      * @return
      */
     @GetMapping("/allProcessOrder")
@@ -144,11 +146,30 @@ public class OrderController {
         System.out.println("获取所有进行中的订单");
         List<Order> orders = orderService.getAllProcessOrder();
         for (Order order : orders) {
-            List<OrderDetail> orderDetails = orderService.getOrderDetailByOrderId(order.getTableId());
+            List<OrderDetail> orderDetails = orderService.getOrderDetailByOrderId(order.getId());
             order.setOrderDetails(orderDetails);
         }
         return ResponseEntity.ok(orders);
     }
+
+
+
+    /**
+     * 获取所有进行中的订单（按照每桌为最小单元）
+     * @return
+     */
+    @GetMapping("/compleatedProcessdOrder")
+    public ResponseEntity allCompleatedProcessdOrder() {
+        //String
+        System.out.println("获取所有前台当天处理的订单");
+        List<Order> orders = orderService.allCompleatedProcessdOrder();
+        for (Order order : orders) {
+            List<OrderDetail> orderDetails = orderService.getCompleteOrderDetailByOrderId(order.getId());
+            order.setOrderDetails(orderDetails);
+        }
+        return ResponseEntity.ok(orders);
+    }
+
 
     /**
      * 更新单个订单记录状态
@@ -163,8 +184,10 @@ public class OrderController {
     @PutMapping("/orderDetail/{id}")
     public ResponseEntity updateOrderDetailStatus(@PathVariable int id, @RequestParam int status) {
         OrderDetail orderDetail = orderService.getOrderDetailById(id);
-        orderDetail.setStatus(status);
-        orderService.updateOrderDetail(orderDetail);
+        if(orderDetail.getStatus()==0){
+            orderDetail.setStatus(status);
+            orderService.updateOrderDetail(orderDetail);
+        }
         return ResponseEntity.ok().build();
     }
 
@@ -179,12 +202,14 @@ public class OrderController {
     @GetMapping("/finishOrder/{id}")
     public ResponseEntity finishOrder(@PathVariable int id) {
         Order order = orderService.getOrderById(id);
-        order.setIsfinished(Consts.TRUE);
-        orderService.updateOrder(order);
-        List<OrderDetail> orderDetails = orderService.getOrderDetailByOrderId(order.getTableId());
-        for (OrderDetail orderdetail : orderDetails) {
-            orderdetail.setStatus(2);
-            orderService.updateOrderDetail(orderdetail);
+        if(order.getIsfinished()==false){
+            order.setIsfinished(Consts.TRUE);
+            orderService.updateOrder(order);
+            List<OrderDetail> orderDetails = orderService.getOrderDetailByOrderId(order.getId());
+            for (OrderDetail orderdetail : orderDetails) {
+                orderdetail.setStatus(2);
+                orderService.updateOrderDetail(orderdetail);
+            }
         }
         return ResponseEntity.ok().build();
     }
@@ -217,6 +242,8 @@ public class OrderController {
         List<FinishedOrder> finishedOrderlist =orderService.getAllFinishedOrders();
         return ResponseEntity.ok(finishedOrderlist);
     }
+
+
 
 
 }

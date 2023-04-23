@@ -31,8 +31,8 @@ public class OrderServiceImpl {
     private TableInfoMapper tableInfoMapper;
 
 
-    public void saveOrder(Order order) {
-        orderMapper.insertSelective(order);
+    public int saveOrder(Order order) {
+        return orderMapper.insertSelective(order);
     }
 
     public void updateOrder(Order order) {
@@ -53,8 +53,13 @@ public class OrderServiceImpl {
         return orderDetailMapper.selectByPrimaryKey(id);
     }
 
-    public List<OrderDetail> getOrderDetailByOrderId(String id) {
+    public List<OrderDetail> getOrderDetailByOrderId(Integer id) {
         return orderDetailMapper.getOrderDetailByOrderId(id);
+    }
+
+
+    public List<OrderDetail> getCompleteOrderDetailByOrderId(Integer id) {
+        return orderDetailMapper.getCompleteOrderDetailByOrderId(id);
     }
 
     public void updateOrderDetail(OrderDetail orderDetail) {
@@ -82,6 +87,11 @@ public class OrderServiceImpl {
     public List<Order> getAllProcessOrder() {
         return orderMapper.getAllProcessOrder();
     }
+
+    public List<Order> allCompleatedProcessdOrder() {
+        return orderMapper.allCompleatedProcessdOrder();
+    }
+
 
     public List<Order> getOrdersByWaiterId(int waiterId) {
         return orderMapper.getOrdersByWaiterId(waiterId);
