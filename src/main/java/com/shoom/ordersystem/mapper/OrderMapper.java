@@ -46,7 +46,7 @@ public interface OrderMapper {
      *
      * @mbg.generated Fri Apr 07 19:38:52 PDT 2023
      */
-    Order selectByPrimaryKey(String id);
+    Order selectByPrimaryKey(int id);
 
 
     List<Order> selectAll();

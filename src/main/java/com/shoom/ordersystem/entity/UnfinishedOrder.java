@@ -16,7 +16,7 @@ public class UnfinishedOrder {
     /**
      * 桌子id
      */
-    private int tableId;
+    private String tableId;
 
     /**
      * 下单时间
@@ -43,11 +43,11 @@ public class UnfinishedOrder {
         this.id = id;
     }
 
-    public int getTableId() {
+    public String getTableId() {
         return tableId;
     }
 
-    public void setTableId(int tableId) {
+    public void setTableId(String tableId) {
         this.tableId = tableId;
     }
 

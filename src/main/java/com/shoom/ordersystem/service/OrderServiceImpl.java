@@ -70,7 +70,7 @@ public class OrderServiceImpl {
         return orderMapper.getAllFinishedOrders();
     }
 
-    public Order getOrderById(String id) {
+    public Order getOrderById(int id) {
         return orderMapper.selectByPrimaryKey(id);
     }
 

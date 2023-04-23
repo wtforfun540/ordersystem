@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
+
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 
@@ -48,12 +50,14 @@ public class OrderController {
         String deskNumber = (String) map.get("deskNumber");
        // int tableId = Integer.valueOf(deskNumber.substring(1, 2));
 
-        //
+
         //封装订单
         Order order = new Order();
         order.setTableId(deskNumber);
-        order.setWaiterId("");
+        order.setWaiterId("8");
         order.setIsfinished(Consts.FALSE);
+        order.setTotalPrice(new BigDecimal(map.get("totalPrice").toString()));
+
 
         //保存订单
         orderService.saveOrder(order);
@@ -66,6 +70,7 @@ public class OrderController {
             orderDetail.setOrderId(deskNumber);
             orderDetail.setProductId((int) item.get("id"));
             orderDetail.setCount((int) item.get("quantity"));
+            orderDetail.setProductName((String) item.get("name"));
             double price = Double.valueOf(item.get("price").toString());
             orderDetail.setProductPrice(price);
             orderDetail.setStatus(Consts.ORDERED);
@@ -81,7 +86,7 @@ public class OrderController {
 //        orderService.batchSaveOredrDetail(orderDetails);
 //
         //更新桌面状态
-        orderService.updateTableAvailability(deskNumber, Consts.FALSE);
+       // orderService.updateTableAvailability(deskNumber, Consts.FALSE);
 
         //// TODO: 2023/4/10  推送订单到后厨
 
@@ -95,7 +100,7 @@ public class OrderController {
      * @return
      */
     @DeleteMapping("/order/{id}")
-    public ResponseEntity deleteOrder(@PathVariable String id) {
+    public ResponseEntity deleteOrder(@PathVariable int id) {
         System.out.println("删除订单" + id);
         return null;
     }
@@ -107,7 +112,7 @@ public class OrderController {
      * @return
      */
     @GetMapping("/order/{id}")
-    public ResponseEntity getOrderById(@PathVariable String id) {
+    public ResponseEntity getOrderById(@PathVariable int id) {
         return ResponseEntity.ok(orderService.getOrderById(id));
     }
 
@@ -172,13 +177,13 @@ public class OrderController {
      */
     @Transactional
     @GetMapping("/finishOrder/{id}")
-    public ResponseEntity finishOrder(@PathVariable String id) {
+    public ResponseEntity finishOrder(@PathVariable int id) {
         Order order = orderService.getOrderById(id);
         order.setIsfinished(Consts.TRUE);
         orderService.updateOrder(order);
         List<OrderDetail> orderDetails = orderService.getOrderDetailByOrderId(order.getTableId());
         for (OrderDetail orderdetail : orderDetails) {
-            orderdetail.setStatus(3);
+            orderdetail.setStatus(2);
             orderService.updateOrderDetail(orderdetail);
         }
         return ResponseEntity.ok().build();
