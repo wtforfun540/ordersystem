@@ -79,6 +79,11 @@ public class OrderServiceImpl {
         return orderMapper.selectByPrimaryKey(id);
     }
 
+    public Order getOrderByTableID(String tableId) {
+
+        return orderMapper.getOrderByTableID(tableId);
+    }
+
     public List<Order> getAllOrders() {
         return orderMapper.selectAll();
     }
@@ -91,6 +96,8 @@ public class OrderServiceImpl {
     public List<Order> allCompleatedProcessdOrder() {
         return orderMapper.allCompleatedProcessdOrder();
     }
+
+
 
 
     public List<Order> getOrdersByWaiterId(int waiterId) {

@@ -47,28 +47,33 @@ public class OrderController {
     @Transactional
     @PostMapping("/order")
     public ResponseEntity addOrder(@RequestBody Map<String, Object> map) {
-
         String deskNumber = (String) map.get("deskNumber");
-       // int tableId = Integer.valueOf(deskNumber.substring(1, 2));
+        Order existOrder=orderService.getOrderByTableID(deskNumber);
+        if(existOrder!=null){// 加菜
+            updateOrder(map,existOrder);
+            Integer orderid=existOrder.getId();
+            insertOrderDetails(map, orderid);
+        }else{ //新开桌
+            Order order= createOrder(map);
+            Integer orderid=order.getId();
+            insertOrderDetails(map, orderid);
+        }
+        return ResponseEntity.ok().build();
+    }
 
-
-        //封装订单
+    public Order createOrder(Map<String, Object> map){
         Order order = new Order();
-        order.setTableId(deskNumber);
+        order.setTableId((String) map.get("deskNumber"));
         order.setWaiterId("8");
         order.setIsfinished(Consts.FALSE);
         order.setTotalPrice(new BigDecimal(map.get("totalPrice").toString()));
-
-
-        //保存订单
         orderService.saveOrder(order);
+        return order;
+    }
 
-        Integer orderid=order.getId();
-//
+    public void insertOrderDetails(Map<String, Object> map,Integer orderid){
         List<Map<String, Object>> items = (List<Map<String, Object>>) map.get("items");
-
         for (Map<String, Object> item : items) {
-
             OrderDetail orderDetail = new OrderDetail();
             orderDetail.setOrderId(orderid);
             orderDetail.setProductId((int) item.get("id"));
@@ -79,22 +84,14 @@ public class OrderController {
             orderDetail.setStatus(Consts.ORDERED);
             orderService.saveOrderDetail(orderDetail);
         }
-//        //获取订单详情
-//        List<OrderDetail> orderDetails = param.getOrderDetails();
-//        for (OrderDetail orderDetail : orderDetails) {
-//            orderDetail.setOrderId(order.getId());
-//        }
-//
-//        //保存订单详情
-//        orderService.batchSaveOredrDetail(orderDetails);
-//
-        //更新桌面状态
-       // orderService.updateTableAvailability(deskNumber, Consts.FALSE);
-
-        //// TODO: 2023/4/10  推送订单到后厨
-
-        return ResponseEntity.ok().build();
     }
+
+    public void updateOrder(Map<String, Object> map,Order existOrder){
+        BigDecimal totalPrice=  new BigDecimal(map.get("totalPrice").toString());
+        existOrder.setTotalPrice(totalPrice.add(existOrder.getTotalPrice()));
+        orderService.updateOrder(existOrder);
+    }
+
 
     /**
      * 删除订单
