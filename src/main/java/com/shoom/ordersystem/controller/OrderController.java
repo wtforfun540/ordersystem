@@ -47,7 +47,7 @@ public class OrderController {
     @Transactional
     @PostMapping("/order")
     public ResponseEntity addOrder(@RequestBody Map<String, Object> map) {
-        String deskNumber = (String) map.get("deskNumber");
+        String deskNumber = ((String) map.get("deskNumber")).trim(); //不考虑为null的情况，因为前台已经限定
         Order existOrder=orderService.getOrderByTableID(deskNumber);
         if(existOrder!=null){// 加菜
             updateOrder(map,existOrder);
