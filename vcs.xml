@@ -14,6 +14,10 @@
           <option name="url" value="https://github.com/bf875239/Java_Pay_v1.git" />
           <option name="userName" value="" />
         </UrlAndUserName>
+        <UrlAndUserName>
+          <option name="url" value="https://github.com/skycode123/java_emc_v1.git" />
+          <option name="userName" value="" />
+        </UrlAndUserName>
       </list>
     </option>
     <option name="cloneParentDir" value="D:\GitProject" />
