@@ -22,6 +22,10 @@
           <option name="url" value="https://github.com/skycode123/java_emc_sports.git" />
           <option name="userName" value="" />
         </UrlAndUserName>
+        <UrlAndUserName>
+          <option name="url" value="https://github.com/gz-yami/mall4cloud.git" />
+          <option name="userName" value="" />
+        </UrlAndUserName>
       </list>
     </option>
     <option name="cloneParentDir" value="D:\GitProject" />
