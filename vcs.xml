@@ -46,6 +46,10 @@
           <option name="url" value="https://github.com/yuexine/spring-cloud-kubernetes-demo.git" />
           <option name="userName" value="" />
         </UrlAndUserName>
+        <UrlAndUserName>
+          <option name="url" value="https://github.com/skycode123/sms_platform_java.git" />
+          <option name="userName" value="" />
+        </UrlAndUserName>
       </list>
     </option>
     <option name="cloneParentDir" value="D:\GitProject" />
